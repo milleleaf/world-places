@@ -12,7 +12,7 @@ tags:
 # World places
 
 Official population figures for places that the World Bank's API leaves out, each from the place's own statistics office
-(or the official regional body), rebuilt weekly by [AlreadyOpen/world-places](https://github.com/milleleaf/world-places).
+(or the official regional body), rebuilt weekly by [milleleaf/world-places](https://github.com/milleleaf/world-places).
 Taiwan, for example, has its own government and population and no World Bank entry at all.
 
 - `index.json`: the bake time, the files, and how many places each holds.

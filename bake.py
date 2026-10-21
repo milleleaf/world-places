@@ -8,7 +8,7 @@ import csv, datetime, html, io, json, os, re, subprocess, sys, time, urllib.requ
 import openpyxl
 import sources
 
-UA = {'User-Agent': 'AlreadyOpen world-places (https://github.com/milleleaf/world-places)'}
+UA = {'User-Agent': 'Milleleaf world-places (https://github.com/milleleaf/world-places)'}
 
 
 def get(url, data=None, headers=None, tries=1):
