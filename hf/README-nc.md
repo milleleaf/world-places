@@ -2,7 +2,7 @@
 pretty_name: World places, credited (official figures with no open licence)
 license: other
 license_name: per-source-no-open-licence
-license_link: https://github.com/AlreadyOpen/world-places/blob/main/sources.json
+license_link: https://github.com/milleleaf/world-places/blob/main/sources.json
 tags:
   - population
   - official-statistics
@@ -12,8 +12,8 @@ tags:
 
 Official population figures for places the World Bank's API leaves out, from statistics offices that publish them under
 plain copyright or with no licence stated. They are republished as facts, each credited to its publisher with a link to
-its own page, and kept apart from the open-licence dataset [alreadyopen/world-places](https://huggingface.co/datasets/alreadyopen/world-places).
-Rebuilt weekly by [AlreadyOpen/world-places](https://github.com/AlreadyOpen/world-places).
+its own page, and kept apart from the open-licence dataset [alreadyopen/world-places](https://huggingface.co/datasets/milleleaf/world-places).
+Rebuilt weekly by [AlreadyOpen/world-places](https://github.com/milleleaf/world-places).
 
 **Terms:** no open licence. Each file names its publisher and links its terms where one exists; check them before reuse.
 Somaliland's figure is entered by hand from its PDF. Western Sahara is not here: Morocco HCP's regional figures are CC BY 4.0

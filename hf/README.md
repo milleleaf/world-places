@@ -2,7 +2,7 @@
 pretty_name: World places (official figures for places the World Bank leaves out)
 license: other
 license_name: per-source
-license_link: https://github.com/AlreadyOpen/world-places/blob/main/sources.json
+license_link: https://github.com/milleleaf/world-places/blob/main/sources.json
 tags:
   - geospatial
   - population
@@ -12,7 +12,7 @@ tags:
 # World places
 
 Official population figures for places that the World Bank's API leaves out, each from the place's own statistics office
-(or the official regional body), rebuilt weekly by [AlreadyOpen/world-places](https://github.com/AlreadyOpen/world-places).
+(or the official regional body), rebuilt weekly by [AlreadyOpen/world-places](https://github.com/milleleaf/world-places).
 Taiwan, for example, has its own government and population and no World Bank entry at all.
 
 - `index.json`: the bake time, the files, and how many places each holds.
@@ -35,7 +35,7 @@ Taiwan, for example, has its own government and population and no World Bank ent
 
 Every file here is under an open licence or open terms. Official figures with no open licence (Guernsey, Northern Cyprus,
 Anguilla, Montserrat, Saint Helena and Tristan da Cunha, Falklands, Vatican, Somaliland) are in a separate dataset,
-[alreadyopen/world-places-nc](https://huggingface.co/datasets/alreadyopen/world-places-nc). Places may carry `notes`
+[alreadyopen/world-places-nc](https://huggingface.co/datasets/milleleaf/world-places-nc). Places may carry `notes`
 (estimate caveats). `morocco_hcp.json` gives Morocco's 2024 census legal population for the two Moroccan-administered regions
 side by side, with `scope` and `status_note` ("Status disputed"): Morocco's regional borders do not match the territory of
 Western Sahara, so they are never summed into a Western Sahara total.

@@ -2,9 +2,9 @@
 
 Official population figures for places the World Bank's API leaves out (Taiwan, Jersey, Åland, Cook Islands, ...), from each
 place's own statistics office, one JSON per source, published weekly to Hugging Face
-([dataset](https://huggingface.co/datasets/alreadyopen/world-places), [bucket](https://huggingface.co/buckets/alreadyopen/world-places)
+([dataset](https://huggingface.co/datasets/milleleaf/world-places), [bucket](https://huggingface.co/buckets/milleleaf/world-places)
 read by browsers) and mirrored to [Kaggle](https://www.kaggle.com/datasets/helenkwok/world-places). Built from
-[pipeline-template](https://github.com/AlreadyOpen/pipeline-template).
+[pipeline-template](https://github.com/milleleaf/pipeline-template).
 
 Why a pipeline: some sources cannot be read from a browser (Åland's PxWeb answers only a JSON POST and refuses the CORS
 preflight; Jersey's open data sends no CORS header). Official figures with no open licence (Guernsey, Northern Cyprus, Anguilla, Montserrat, Saint Helena and Tristan da Cunha,

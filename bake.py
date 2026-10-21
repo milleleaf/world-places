@@ -8,7 +8,7 @@ import csv, datetime, html, io, json, os, re, subprocess, sys, time, urllib.requ
 import openpyxl
 import sources
 
-UA = {'User-Agent': 'AlreadyOpen world-places (https://github.com/AlreadyOpen/world-places)'}
+UA = {'User-Agent': 'AlreadyOpen world-places (https://github.com/milleleaf/world-places)'}
 
 
 def get(url, data=None, headers=None, tries=1):
@@ -320,7 +320,7 @@ def keep_published(sid):
     out = NC_OUT if sid in NC else sources.OUT
     repo = 'world-places-nc' if sid in NC else 'world-places'
     try:
-        open(os.path.join(out, f'{sid}.json'), 'wb').write(get(f'https://huggingface.co/buckets/alreadyopen/{repo}/resolve/{sid}.json'))
+        open(os.path.join(out, f'{sid}.json'), 'wb').write(get(f'https://huggingface.co/buckets/milleleaf/{repo}/resolve/{sid}.json'))
         print(f'{sid}: kept the published file', file=sys.stderr)
     except Exception as e:
         print(f'{sid}: no published file to keep ({e})', file=sys.stderr)
