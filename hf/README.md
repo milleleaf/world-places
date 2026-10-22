@@ -35,7 +35,7 @@ Taiwan, for example, has its own government and population and no World Bank ent
 
 Every file here is under an open licence or open terms. Official figures with no open licence (Guernsey, Northern Cyprus,
 Anguilla, Montserrat, Saint Helena and Tristan da Cunha, Falklands, Vatican, Somaliland) are in a separate dataset,
-[alreadyopen/world-places-nc](https://huggingface.co/datasets/milleleaf/world-places-nc). Places may carry `notes`
+[milleleaf/world-places-nc](https://huggingface.co/datasets/milleleaf/world-places-nc). Places may carry `notes`
 (estimate caveats). `morocco_hcp.json` gives Morocco's 2024 census legal population for the two Moroccan-administered regions
 side by side, with `scope` and `status_note` ("Status disputed"): Morocco's regional borders do not match the territory of
 Western Sahara, so they are never summed into a Western Sahara total.
