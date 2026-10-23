@@ -4,18 +4,23 @@ One JSON per source (never merged: each keeps its own terms), plus index.json li
   out/<id>.json  {"source", "publisher", "url", "licence", "places": [{"iso3", "name", "population", "aged_65_plus_pct",
                   "density_per_km2", "period"}]}      (a figure the source does not publish is left out, never estimated)
 Usage: python3 bake.py [<source id> ...]     (default: every source)"""
-import csv, datetime, html, io, json, os, re, subprocess, sys, time, urllib.request
+import csv, datetime, html, io, json, os, re, ssl, subprocess, sys, time, urllib.request
 import openpyxl
 import sources
 
 UA = {'User-Agent': 'Milleleaf world-places (https://github.com/milleleaf/world-places)'}
+# stat.gov.ct.tr sends its certificate without Let's Encrypt's YR1 intermediate (browsers fetch it themselves; Python does not):
+# the public YR1 and Root YR (cross-signed by ISRG Root X1) are added for path building, the system roots still decide
+# ponytail: a fixed copy, expires 2028; fetch AIA links instead if more sites need it
+CTX = ssl.create_default_context()
+CTX.load_verify_locations(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'certs', 'lets-encrypt-yr.pem'))
 
 
 def get(url, data=None, headers=None, tries=1):
     req = urllib.request.Request(url, data=data, headers={**UA, **(headers or {})})
     for t in range(tries):
         try:
-            with urllib.request.urlopen(req, timeout=120) as r:
+            with urllib.request.urlopen(req, timeout=120, context=CTX) as r:
                 return r.read()
         except OSError:
             if t == tries - 1:
@@ -84,7 +89,8 @@ def jersey():
     rows = list(csv.DictReader(io.StringIO(get(meta['result']['resources'][0]['url']).decode('utf-8-sig'))))
     year = max(r['Year'] for r in rows); rows = [r for r in rows if r['Year'] == year]
     n = lambda r: int(r['Male'] or 0) + int(r['Female'] or 0)
-    total = sum(n(r) for r in rows); old = sum(n(r) for r in rows if int(r['Age']) >= 65)
+    age = lambda a: int(a.rstrip('+'))                                  # the oldest group is '90+'
+    total = sum(n(r) for r in rows); old = sum(n(r) for r in rows if age(r['Age']) >= 65)
     return [{'iso3': 'JEY', 'name': 'Jersey', 'population': total, 'aged_65_plus_pct': round(100 * old / total, 2), 'period': year}]
 
 
@@ -304,11 +310,12 @@ NC = {'guernsey', 'northern_cyprus', 'anguilla', 'montserrat', 'saint_helena', '
 NC_OUT = os.path.join(sources.OUT, 'nc')
 
 
-def write_index(out, ids, failed, extra=None):
+def write_index(out, ids, failed, extra=None, status=None):
     files = sorted(f[:-5] for f in os.listdir(out) if f.endswith('.json') and f[:-5] in ids)
     counts = {f: len(json.load(open(os.path.join(out, f + '.json')))['places']) for f in files}
     idx = {'built': datetime.datetime.now().isoformat(timespec='seconds'), 'counts': {**counts, **(extra or {})},
-           'files': [f + '.json' for f in files], 'failed': [x for x in failed if x.split(':')[0] in ids or x.startswith('countries:') and extra]}
+           'files': [f + '.json' for f in files], 'failed': [x for x in failed if x.split(':')[0] in ids or x.startswith('countries:') and extra],
+           'status': {k: v for k, v in sorted((status or {}).items()) if k in ids}}   # fresh | kept (last published file) | missing
     if extra:
         idx['tiles'] = 'countries.pmtiles' if os.path.exists(os.path.join(out, 'countries.pmtiles')) else None
     json.dump(idx, open(os.path.join(out, 'index.json'), 'w'), indent=1)
@@ -321,21 +328,22 @@ def keep_published(sid):
     repo = 'world-places-nc' if sid in NC else 'world-places'
     try:
         open(os.path.join(out, f'{sid}.json'), 'wb').write(get(f'https://huggingface.co/buckets/milleleaf/{repo}/resolve/{sid}.json'))
-        print(f'{sid}: kept the published file', file=sys.stderr)
+        print(f'::warning::{sid}: failed, kept the published file', file=sys.stderr); return 'kept'
     except Exception as e:
-        print(f'{sid}: no published file to keep ({e})', file=sys.stderr)
+        print(f'::warning::{sid}: failed, no published file to keep ({e})', file=sys.stderr); return 'missing'
 
 
 def main(ids):
     os.makedirs(NC_OUT, exist_ok=True)
-    failed = []
+    failed, status = [], {}
     for sid in ids:
         f, publisher, licence, url, *extra = SOURCES[sid]
         try:
             places = f()
         except Exception as e:
             failed.append(f'{sid}: {e}'); print(f'{sid}: FAILED {e}', file=sys.stderr)
-            keep_published(sid); continue
+            status[sid] = keep_published(sid); continue
+        status[sid] = 'fresh'
         out = NC_OUT if sid in NC else sources.OUT
         json.dump({'source': sid, 'publisher': publisher, 'url': url, 'licence': licence, **(extra[0] if extra else {}), 'places': places},
                   open(os.path.join(out, f'{sid}.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
@@ -347,8 +355,8 @@ def main(ids):
         extra['countries'] = countries()
     except Exception as e:
         failed.append(f'countries: {e}'); print(f'countries: FAILED {e}', file=sys.stderr)
-    write_index(sources.OUT, set(SOURCES) - NC, failed, extra)
-    write_index(NC_OUT, NC, failed)
+    write_index(sources.OUT, set(SOURCES) - NC, failed, extra, status)
+    write_index(NC_OUT, NC, failed, status=status)
     if len([f for f in failed if not f.startswith('countries:')]) == len(ids):
         sys.exit('every source failed')
 
